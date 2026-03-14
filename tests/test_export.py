@@ -3,7 +3,6 @@ Tests for src/export.py — JSON, CSV, and Markdown report export.
 """
 
 import json
-import pytest
 
 from src.export import export_to_json, export_to_csv, generate_report
 

@@ -2,7 +2,6 @@
 Tests for src/rag.py — RAG pipeline, conversation memory, and answer generation.
 """
 
-import pytest
 from unittest.mock import patch, MagicMock
 
 from src.rag import ConversationMemory, get_answer

@@ -3,8 +3,6 @@ Tests for src/cache.py — LRU cache, TTL expiration, and URL deduplication.
 """
 
 import time
-import pytest
-
 from src.cache import QueryCache, URLDeduplicator
 
 

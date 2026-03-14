@@ -122,10 +122,9 @@ class TestLoadUrls:
                 page_content="Test content " * 20,
                 metadata={"source": "test"},
             )
-            result = load_urls([
+            load_urls([
                 "https://example.com/article",
                 "https://example.com/article/",
             ])
             # Should only fetch once (dedup strips trailing slash)
             assert mock_fetch.call_count == 1
-

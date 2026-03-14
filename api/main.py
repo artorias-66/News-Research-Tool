@@ -6,7 +6,7 @@ health checks, and metrics. Decouples the RAG engine from the
 Streamlit frontend for independent testability and scalability.
 """
 
-import os
+
 import time
 from typing import Optional
 from contextlib import asynccontextmanager

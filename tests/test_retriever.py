@@ -2,11 +2,6 @@
 Tests for src/retriever.py — BM25, FAISS, RRF fusion, and re-ranking.
 """
 
-import pytest
-try:
-    from langchain_core.documents import Document
-except ImportError:
-    from langchain.schema import Document
 
 from src.retriever import (
     BM25Retriever,

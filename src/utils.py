@@ -10,7 +10,7 @@ import time
 import logging
 import hashlib
 import functools
-from typing import Optional, Callable, Any
+from typing import Callable, Any
 from urllib.parse import urlparse
 
 from src.exceptions import URLValidationError

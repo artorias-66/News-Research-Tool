@@ -14,7 +14,7 @@ Architecture:
 import pickle
 import os
 import numpy as np
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 from rank_bm25 import BM25Okapi
 try:
@@ -28,6 +28,8 @@ from src.utils import setup_logger, timed
 logger = setup_logger(__name__)
 
 # ─────────────────────────── Data Types ──────────────────────────────
+
+
 
 @dataclass
 class RetrievedChunk:

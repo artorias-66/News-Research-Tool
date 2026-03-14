@@ -18,7 +18,7 @@ try:
     from langchain_text_splitters import RecursiveCharacterTextSplitter
 except ImportError:
     from langchain.text_splitter import RecursiveCharacterTextSplitter
-from typing import Optional
+
 
 from src.utils import clean_text, validate_url, hash_content, setup_logger, timed
 from src.exceptions import URLFetchError, URLValidationError

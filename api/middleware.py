@@ -7,7 +7,7 @@ from typing import Optional
 from collections import defaultdict
 
 from src.utils import setup_logger
-from src.exceptions import RateLimitError
+
 
 logger = setup_logger(__name__)
 

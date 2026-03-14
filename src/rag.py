@@ -19,7 +19,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 try:
     from langchain_core.prompts import PromptTemplate
 except ImportError:
-    from langchain.prompts import PromptTemplate
+    pass
 
 from src.retriever import HybridRetriever, BM25Retriever, RetrievedChunk
 from src.cache import QueryCache
@@ -87,7 +87,7 @@ class ConversationMemory:
 RELEVANCE_THRESHOLD = 0.35
 
 # Prompt with conversation memory support
-RAG_PROMPT_TEMPLATE = """You are an expert equity research analyst. Use the following context and conversation history to answer the question. 
+RAG_PROMPT_TEMPLATE = """You are an expert equity research analyst. Use the following context and conversation history to answer the question.
 
 If the context doesn't contain enough information, say so clearly. Do not fabricate information.
 Cite specific details from the sources when possible.
