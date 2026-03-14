@@ -15,12 +15,6 @@ except ImportError:
 
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
-
-try:
-    from langchain_core.prompts import PromptTemplate
-except ImportError:
-    pass
-
 from src.retriever import HybridRetriever, BM25Retriever, RetrievedChunk
 from src.cache import QueryCache
 from src.utils import setup_logger, timed, truncate_text

@@ -30,7 +30,6 @@ logger = setup_logger(__name__)
 # ─────────────────────────── Data Types ──────────────────────────────
 
 
-
 @dataclass
 class RetrievedChunk:
     """A retrieved document chunk with metadata.
