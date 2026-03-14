@@ -1,0 +1,216 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Equity Research Tool — Custom Styles
+   Dark theme with glassmorphism, metric cards, and subtle animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Base ── */
+.stApp {
+    background-color: #0e1117;
+    color: #fafafa;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background-color: #161b22;
+    border-right: 1px solid #30363d;
+}
+
+/* ── Headings ── */
+h1,
+h2,
+h3 {
+    color: #58a6ff;
+    font-weight: 600;
+}
+
+/* ── Buttons ── */
+.stButton>button {
+    background-color: #238636;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.stButton>button:hover {
+    background-color: #2ea043;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+}
+
+/* ── Inputs ── */
+.stTextInput>div>div>input {
+    background-color: #0d1117;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    border-radius: 6px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stTextInput>div>div>input:focus {
+    border-color: #58a6ff;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+}
+
+/* ── Chat Messages ── */
+.stChatMessage {
+    background-color: rgba(22, 27, 34, 0.8);
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.3s ease-out;
+}
+
+[data-testid="stChatMessageContent"] {
+    color: #e6edf3;
+}
+
+/* ── Glassmorphism Panel ── */
+.glass-panel {
+    background: rgba(22, 27, 34, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* ── Metric Cards ── */
+[data-testid="stMetric"] {
+    background: linear-gradient(135deg, rgba(22, 27, 34, 0.9), rgba(30, 37, 48, 0.7));
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-testid="stMetric"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+[data-testid="stMetricValue"] {
+    color: #58a6ff;
+    font-weight: 700;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #8b949e;
+}
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 4px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background-color: transparent;
+    border-radius: 8px 8px 0 0;
+    color: #8b949e;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: #e6edf3;
+    background-color: rgba(88, 166, 255, 0.1);
+}
+
+.stTabs [aria-selected="true"] {
+    color: #58a6ff !important;
+    border-bottom: 2px solid #58a6ff;
+}
+
+/* ── Expanders ── */
+.streamlit-expanderHeader {
+    background-color: rgba(22, 27, 34, 0.6);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.streamlit-expanderHeader:hover {
+    background-color: rgba(88, 166, 255, 0.1);
+}
+
+/* ── Status Indicator ── */
+[data-testid="stStatusWidget"] {
+    background-color: rgba(22, 27, 34, 0.8);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+}
+
+/* ── Download Buttons ── */
+.stDownloadButton>button {
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.stDownloadButton>button:hover {
+    background-color: #30363d;
+    border-color: #58a6ff;
+    color: #58a6ff;
+}
+
+/* ── Charts ── */
+[data-testid="stVegaLiteChart"] {
+    background-color: rgba(22, 27, 34, 0.6);
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0d1117;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #58a6ff;
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Spinner animation enhancement */
+.stSpinner>div {
+    animation: pulse 1.5s ease-in-out infinite;
+}

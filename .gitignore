@@ -1,23 +1,42 @@
-# Virtual environments
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Env
 venv/
 venv_*/
+env/
+ENV/
 .env
 
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Data or pickle files
-*.pkl
-*.db
-*.sqlite3
-
-# OS-specific junk
-.DS_Store
-Thumbs.db
-
-# IDEs
+# IDE
 .idea/
 .vscode/
+
+# Project Specific
+embeddings_store.pkl
+faiss_index/
+bm25_index.pkl
+
+# OS
+*.DS_Store
+Thumbs.db
