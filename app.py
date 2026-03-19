@@ -20,6 +20,9 @@ if sys.version_info >= (3, 14):
 
 import time
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from src.ui import load_css, render_header, render_sidebar, render_analytics, render_export_controls
 from src.ingest import load_urls, process_documents

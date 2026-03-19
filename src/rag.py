@@ -114,6 +114,14 @@ def get_llm(
         LLMError: If initialization fails with a valid API key.
     """
     if not api_key:
+        if provider == "openai":
+            api_key = os.environ.get("OPENAI_API_KEY")
+        elif provider == "google":
+            api_key = os.environ.get("GOOGLE_API_KEY")
+        elif provider == "groq":
+            api_key = os.environ.get("GROQ_API_KEY")
+
+    if not api_key:
         return None
 
     try:
@@ -188,6 +196,8 @@ def get_answer(
         Dict with keys: answer, sources, chunks_with_scores, has_llm, is_relevant,
         retrieval_method, response_time_ms.
     """
+    logger.info(f"get_answer invoked! provider={provider}, api_key_length={len(api_key) if api_key else 0}")
+
     if not vector_store:
         return {
             "answer": "Vector store not found. Please process URLs first.",
