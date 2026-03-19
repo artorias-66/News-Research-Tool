@@ -128,7 +128,7 @@ def get_llm(
         if provider == "openai":
             return ChatOpenAI(
                 api_key=api_key,
-                model_name="gpt-3.5-turbo",
+                model_name="gpt-4o-mini",
                 temperature=0.3,
             )
         elif provider == "google":
@@ -140,7 +140,7 @@ def get_llm(
                 temperature=0.3,
             )
         elif provider == "groq":
-            model = os.environ.get("GROQ_MODEL", "llama3-8b-8192")
+            model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
             return ChatGroq(
                 api_key=api_key,
                 model_name=model,
