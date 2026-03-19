@@ -96,14 +96,25 @@ Provide a thorough, well-structured answer:"""
 
 
 def get_llm() -> Optional[Any]:
-    """Initialize the Groq LLM using the GROQ_API_KEY from the environment.
+    """Initialize the Groq LLM using GROQ_API_KEY.
+
+    Checks os.environ first (local .env), then st.secrets (Streamlit Cloud).
 
     Returns:
         ChatGroq instance, or None if GROQ_API_KEY is not set.
     """
     api_key = os.environ.get("GROQ_API_KEY")
+
+    # Fallback: Streamlit Cloud exposes secrets via st.secrets
     if not api_key:
-        logger.warning("GROQ_API_KEY not set in environment. Running in retrieval-only mode.")
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            pass
+
+    if not api_key:
+        logger.warning("GROQ_API_KEY not set. Running in retrieval-only mode.")
         return None
 
     model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
