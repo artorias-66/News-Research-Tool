@@ -48,9 +48,9 @@ def render_sidebar() -> tuple:
             api_key = st.text_input(
                 "API Key",
                 type="password",
-                help="OpenAI or Gemini API key. Leave empty for retrieval-only mode.",
+                help="Groq, OpenAI, or Gemini API key. Leave empty for retrieval-only mode.",
             )
-            provider = st.selectbox("Provider", ["openai", "google"], index=0)
+            provider = st.selectbox("Provider", ["groq", "openai", "google"], index=0)
 
         st.markdown("---")
 

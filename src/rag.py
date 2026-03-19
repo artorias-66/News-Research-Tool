@@ -15,6 +15,7 @@ except ImportError:
 
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from src.retriever import HybridRetriever, BM25Retriever, RetrievedChunk
 from src.cache import QueryCache
 from src.utils import setup_logger, timed, truncate_text
@@ -128,6 +129,13 @@ def get_llm(
             return ChatGoogleGenerativeAI(
                 google_api_key=api_key,
                 model=model,
+                temperature=0.3,
+            )
+        elif provider == "groq":
+            model = os.environ.get("GROQ_MODEL", "llama3-8b-8192")
+            return ChatGroq(
+                api_key=api_key,
+                model_name=model,
                 temperature=0.3,
             )
         else:
