@@ -13,8 +13,6 @@ try:
 except ImportError:
     RetrievalQA = None  # Not used directly in current code
 
-from langchain_openai import ChatOpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
 from src.retriever import HybridRetriever, BM25Retriever, RetrievedChunk
 from src.cache import QueryCache
@@ -97,61 +95,26 @@ Question: {question}
 Provide a thorough, well-structured answer:"""
 
 
-def get_llm(
-    api_key: Optional[str] = None,
-    provider: str = "openai",
-) -> Optional[Any]:
-    """Initialize an LLM instance based on provider.
-
-    Args:
-        api_key: API key for the provider. If None, returns None.
-        provider: LLM provider ('openai' or 'google').
+def get_llm() -> Optional[Any]:
+    """Initialize the Groq LLM using the GROQ_API_KEY from the environment.
 
     Returns:
-        LLM instance, or None if no API key provided.
-
-    Raises:
-        LLMError: If initialization fails with a valid API key.
+        ChatGroq instance, or None if GROQ_API_KEY is not set.
     """
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
-        if provider == "openai":
-            api_key = os.environ.get("OPENAI_API_KEY")
-        elif provider == "google":
-            api_key = os.environ.get("GOOGLE_API_KEY")
-        elif provider == "groq":
-            api_key = os.environ.get("GROQ_API_KEY")
-
-    if not api_key:
+        logger.warning("GROQ_API_KEY not set in environment. Running in retrieval-only mode.")
         return None
 
+    model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
     try:
-        if provider == "openai":
-            return ChatOpenAI(
-                api_key=api_key,
-                model_name="gpt-4o-mini",
-                temperature=0.3,
-            )
-        elif provider == "google":
-            # Try models in order — different models may have separate quotas
-            model = os.environ.get("GOOGLE_MODEL", "gemini-2.0-flash")
-            return ChatGoogleGenerativeAI(
-                google_api_key=api_key,
-                model=model,
-                temperature=0.3,
-            )
-        elif provider == "groq":
-            model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-            return ChatGroq(
-                api_key=api_key,
-                model_name=model,
-                temperature=0.3,
-            )
-        else:
-            raise LLMError(provider, f"Unknown provider: {provider}")
-    except LLMError:
-        raise
+        return ChatGroq(
+            api_key=api_key,
+            model_name=model,
+            temperature=0.3,
+        )
     except Exception as e:
-        raise LLMError(provider, str(e))
+        raise LLMError("groq", str(e))
 
 
 # ────────────────────── Answer Generation ────────────────────────────
@@ -175,20 +138,16 @@ def get_memory() -> ConversationMemory:
 def get_answer(
     query: str,
     vector_store: Any,
-    api_key: Optional[str] = None,
-    provider: str = "openai",
     bm25_retriever: Optional[BM25Retriever] = None,
     use_cache: bool = True,
 ) -> dict[str, Any]:
     """Generate an answer using the hybrid RAG pipeline.
 
-    Pipeline: Cache check → Hybrid retrieval → LLM generation (if available) → Cache store
+    Pipeline: Cache check → Hybrid retrieval → Groq LLM generation → Cache store
 
     Args:
         query: User's question.
         vector_store: FAISS vector store.
-        api_key: Optional LLM API key.
-        provider: LLM provider ('openai' or 'google').
         bm25_retriever: Optional BM25 index for hybrid search.
         use_cache: Whether to check/update the cache.
 
@@ -196,7 +155,7 @@ def get_answer(
         Dict with keys: answer, sources, chunks_with_scores, has_llm, is_relevant,
         retrieval_method, response_time_ms.
     """
-    logger.info(f"get_answer invoked! provider={provider}, api_key_length={len(api_key) if api_key else 0}")
+    logger.info("get_answer invoked")
 
     if not vector_store:
         return {
@@ -210,7 +169,7 @@ def get_answer(
 
     # ─── Step 1: Cache check ───
     if use_cache:
-        cached = _query_cache.get(query, provider=provider)
+        cached = _query_cache.get(query, provider="groq")
         if cached is not None:
             logger.info("Cache HIT — returning cached answer")
             cached["from_cache"] = True
@@ -264,11 +223,11 @@ def get_answer(
     is_relevant = max_score >= RELEVANCE_THRESHOLD
 
     # ─── Step 3: LLM generation ───
-    llm = get_llm(api_key, provider)
+    llm = get_llm()
     conversation_context = _conversation_memory.get_context_string()
 
     if llm:
-        logger.info(f"Generating answer with {provider} (hybrid={use_hybrid})...")
+        logger.info(f"Generating answer with groq (hybrid={use_hybrid})...")
         try:
             prompt = RAG_PROMPT_TEMPLATE.format(
                 conversation_history=conversation_context or "No prior conversation.",
@@ -302,7 +261,7 @@ def get_answer(
 
             # Cache the result
             if use_cache:
-                _query_cache.put(query, result, provider=provider)
+                _query_cache.put(query, result, provider="groq")
 
             return result
 
@@ -338,6 +297,6 @@ def get_answer(
     }
 
     if use_cache:
-        _query_cache.put(query, result, provider=provider)
+        _query_cache.put(query, result, provider="groq")
 
     return result

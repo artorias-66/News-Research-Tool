@@ -13,6 +13,7 @@ import sys
 if sys.version_info >= (3, 14):
     import typing
     _orig_new = typing._TypedDictMeta.__new__
+
     def _patched_new(cls, name, bases, ns, *, closed=False, total=True, **kwargs):
         return _orig_new(cls, name, bases, ns, total=total, **kwargs)
     typing._TypedDictMeta.__new__ = _patched_new
@@ -20,9 +21,7 @@ if sys.version_info >= (3, 14):
 
 import time
 import streamlit as st
-from dotenv import load_dotenv
-
-load_dotenv()
+from dotenv import load_dotenv; load_dotenv()  # noqa: E702
 
 from src.ui import load_css, render_header, render_sidebar, render_analytics, render_export_controls
 from src.ingest import load_urls, process_documents
@@ -43,7 +42,7 @@ def main() -> None:
     render_header()
 
     # Sidebar (returns chunk_size and chunk_overlap now)
-    api_key, provider, urls, process_button, chunk_size, chunk_overlap = render_sidebar()
+    urls, process_button, chunk_size, chunk_overlap = render_sidebar()
 
     # ─── Initialize Session State ───
     if "messages" not in st.session_state:
@@ -130,8 +129,6 @@ def main() -> None:
                         response = get_answer(
                             query=prompt,
                             vector_store=st.session_state.vector_store,
-                            api_key=api_key,
-                            provider=provider,
                             bm25_retriever=st.session_state.bm25_retriever,
                         )
 
@@ -141,7 +138,6 @@ def main() -> None:
                         answer = response["answer"]
                         sources = response["sources"]
                         chunks_with_scores = response.get("chunks_with_scores", [])
-                        has_llm = response.get("has_llm", False)
                         retrieval_method = response.get("retrieval_method", "unknown")
                         from_cache = response.get("from_cache", False)
 

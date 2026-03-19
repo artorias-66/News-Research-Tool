@@ -38,19 +38,10 @@ def render_sidebar() -> tuple:
     """Render the sidebar with configuration, dynamic URLs, and advanced settings.
 
     Returns:
-        Tuple of (api_key, provider, urls, process_button, chunk_size, chunk_overlap).
+        Tuple of (urls, process_button, chunk_size, chunk_overlap).
     """
     with st.sidebar:
         st.header("⚙️ Configuration")
-
-        # LLM Settings
-        with st.expander("🤖 LLM Settings", expanded=True):
-            api_key = st.text_input(
-                "API Key",
-                type="password",
-                help="Groq, OpenAI, or Gemini API key. Leave empty for retrieval-only mode.",
-            )
-            provider = st.selectbox("Provider", ["groq", "openai", "google"], index=0)
 
         st.markdown("---")
 
@@ -121,7 +112,7 @@ def render_sidebar() -> tuple:
         """
         )
 
-        return api_key, provider, urls, process_button, chunk_size, chunk_overlap
+        return urls, process_button, chunk_size, chunk_overlap
 
 
 def render_analytics(
