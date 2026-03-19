@@ -47,8 +47,6 @@ class IngestResponse(BaseModel):
 class QueryRequest(BaseModel):
     """Request body for RAG query."""
     question: str = Field(..., min_length=1, description="Research question")
-    provider: str = Field("openai", description="LLM provider: 'openai' or 'google'")
-    api_key: Optional[str] = Field(None, description="LLM API key")
 
 
 class QueryResponse(BaseModel):
@@ -222,8 +220,6 @@ async def query(request: Request, body: QueryRequest):
     result = get_answer(
         query=body.question,
         vector_store=_state["vector_store"],
-        api_key=body.api_key,
-        provider=body.provider,
         bm25_retriever=_state["bm25_retriever"],
     )
 

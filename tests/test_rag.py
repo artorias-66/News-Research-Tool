@@ -62,7 +62,6 @@ class TestGetAnswer:
         result = get_answer(
             "Apple earnings",
             vector_store=mock_vs,
-            api_key=None,
             use_cache=False,
         )
 
@@ -91,8 +90,6 @@ class TestGetAnswer:
         result = get_answer(
             "Apple earnings",
             vector_store=mock_vs,
-            api_key="test-key",
-            provider="openai",
             use_cache=False,
         )
 
