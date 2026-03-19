@@ -1,11 +1,14 @@
 # Equity Research Tool 📈
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-30%2B-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-87%20passing-brightgreen.svg)](#testing)
+[![CI/CD](https://github.com/artorias-66/News-Research-Tool/actions/workflows/ci.yml/badge.svg)](https://github.com/artorias-66/News-Research-Tool/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](#docker)
+[![Live Demo](https://img.shields.io/badge/demo-streamlit-red.svg)](https://sage-news-research-tool.streamlit.app/)
 
-A **production-grade news research tool** for equity analysts. Combines **hybrid retrieval** (BM25 + FAISS + Cross-Encoder Re-ranking) with LLM-powered answer synthesis, conversation memory, and a RESTful API — built with engineering practices expected at top-tier tech companies.
+A **production-grade news research tool** for equity analysts. Combines **hybrid retrieval** (BM25 + FAISS + Cross-Encoder Re-ranking) with Groq-powered LLM answer synthesis, conversation memory, and a RESTful API.
+
+🚀 **[Live Demo → sage-news-research-tool.streamlit.app](https://sage-news-research-tool.streamlit.app/)**
 
 ## Architecture
 
@@ -48,54 +51,58 @@ graph TB
 |---|---|
 | **Hybrid Retrieval** | BM25 keyword + FAISS semantic search, fused via Reciprocal Rank Fusion (RRF) |
 | **Cross-Encoder Re-ranking** | Precision re-scoring of candidates using `ms-marco-MiniLM` |
+| **Groq LLM** | Ultra-fast inference via `llama-3.3-70b-versatile` (Groq API) |
 | **Conversation Memory** | 5-turn sliding window for multi-turn follow-up questions |
-| **Async Ingestion** | Concurrent URL fetching with `aiohttp` and exponential backoff (1s → 2s → 4s) |
-| **LRU Cache** | TTL-based query cache with hit/miss metrics for analytics |
-| **FastAPI Backend** | RESTful API with Pydantic validation, rate limiting, and health checks |
+| **Async Ingestion** | Concurrent URL fetching with `aiohttp` and exponential backoff |
+| **LRU Cache** | TTL-based query cache with hit/miss metrics |
+| **FastAPI Backend** | RESTful API with Pydantic v2, rate limiting, and health checks |
 | **Export** | JSON, CSV, and Markdown research report formats |
 | **Analytics Dashboard** | Real-time metrics: response times, cache hit rates, chunk statistics |
 | **Docker** | Multi-stage build with non-root user and health checks |
-| **CI/CD** | GitHub Actions: lint → test (with coverage) → Docker build |
+| **CI/CD** | GitHub Actions: lint → test (87 tests, 70%+ coverage) → Docker build |
 
 ## Quick Start
 
-### Docker (Recommended)
+### Streamlit Cloud (Deployed)
+
+👉 **[sage-news-research-tool.streamlit.app](https://sage-news-research-tool.streamlit.app/)**
+
+### Local — Docker (Recommended)
 
 ```bash
-# Clone and configure
 git clone https://github.com/artorias-66/News-Research-Tool.git
 cd News-Research-Tool
-cp .env.example .env  # Add your API keys
+cp .env.example .env      # Add your GROQ_API_KEY
 
-# Start both services
 docker-compose up --build
-
 # API: http://localhost:8000/docs
 # UI:  http://localhost:8501
 ```
 
-### Manual Setup
+### Local — Manual Setup
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-
-# Install dependencies
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Start API server
-uvicorn api.main:app --port 8000
+# Set your Groq API key
+echo GROQ_API_KEY=your_key_here > .env
 
-# Start Streamlit (separate terminal)
-streamlit run app.py
+streamlit run app.py            # UI at http://localhost:8501
+uvicorn api.main:app --port 8000  # API (optional)
 ```
 
-### Standalone Mode (Streamlit only)
+## Configuration
 
-```bash
-streamlit run app.py
-```
+The app reads the LLM API key from the environment — no UI input required.
+
+| Variable | Description | Default |
+|---|---|---|
+| `GROQ_API_KEY` | **Required.** Groq API key | — |
+| `GROQ_MODEL` | Groq model to use | `llama-3.3-70b-versatile` |
+
+Get a free Groq key at [console.groq.com](https://console.groq.com).
 
 ## API Reference
 
@@ -120,17 +127,17 @@ curl -X POST http://localhost:8000/api/ingest \
 ```bash
 curl -X POST http://localhost:8000/api/query \
   -H "Content-Type: application/json" \
-  -d '{"question": "What were the key findings?", "provider": "google", "api_key": "your-key"}'
+  -d '{"question": "What were the key findings?"}'
 ```
 
 ## Testing
 
 ```bash
-# Run all tests with coverage
+# Run all 87 tests with coverage
 pytest tests/ -v --cov=src --cov=api --cov-report=term-missing
 
-# Run specific test module
-pytest tests/test_retriever.py -v
+# Lint check
+flake8 src/ api/ tests/ --max-line-length=120 --ignore=E501,W503
 ```
 
 ## Project Structure
@@ -138,7 +145,7 @@ pytest tests/test_retriever.py -v
 ```
 ├── api/                     # FastAPI backend
 │   ├── main.py              #   App + endpoints + Pydantic models
-│   └── middleware.py         #   Rate limiter + auth
+│   └── middleware.py        #   Rate limiter
 ├── src/                     # Core engine
 │   ├── ingest.py            #   Async URL ingestion + retry
 │   ├── retriever.py         #   Hybrid BM25+FAISS+RRF+Reranker
@@ -149,9 +156,9 @@ pytest tests/test_retriever.py -v
 │   ├── exceptions.py        #   Custom exception hierarchy
 │   ├── utils.py             #   Helpers + validators
 │   └── ui.py                #   Streamlit components
-├── tests/                   #   30+ pytest unit tests
+├── tests/                   #   87 pytest unit tests
 ├── .github/workflows/       #   CI/CD pipeline
-├── app.py                   # Streamlit frontend
+├── app.py                   # Streamlit frontend entry point
 ├── Dockerfile               # Multi-stage build
 ├── docker-compose.yml       # API + Frontend services
 └── requirements.txt
@@ -159,10 +166,11 @@ pytest tests/test_retriever.py -v
 
 ## Tech Stack
 
-- **Backend**: FastAPI, LangChain, FAISS, BM25 (rank-bm25), sentence-transformers
+- **LLM**: Groq (`llama-3.3-70b-versatile`) via LangChain
+- **Retrieval**: FAISS, BM25 (`rank-bm25`), `sentence-transformers`, cross-encoder re-ranking
+- **Backend**: FastAPI, Pydantic v2, aiohttp
 - **Frontend**: Streamlit
-- **AI/ML**: Google Gemini / OpenAI GPT, HuggingFace Embeddings, Cross-Encoder Re-ranking
-- **Infra**: Docker, GitHub Actions, aiohttp
+- **Infra**: Docker, GitHub Actions
 
 ---
 
